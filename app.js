@@ -1,9 +1,11 @@
+// Vérifier si le téléphone a déjà un token unique
 let token = localStorage.getItem('pointage_token');
 if(!token){
     token = 't'+Math.random().toString(36).substr(2,10);
     localStorage.setItem('pointage_token', token);
 }
 
+// Afficher les boutons Entrée / Sortie
 const main = document.getElementById('main');
 main.innerHTML = `
   <button id="btnIn">Entrée</button>
@@ -13,18 +15,33 @@ main.innerHTML = `
 document.getElementById('btnIn').onclick = () => sendPointage('Entrée');
 document.getElementById('btnOut').onclick = () => sendPointage('Sortie');
 
+// Fonction pour envoyer le pointage à Google Sheets
 function sendPointage(type){
     const status = document.getElementById('status');
-fetch('https://script.google.com/macros/s/AKfycbwTlzd0E6Xt9XiVt2SyKFEsy32ku_gXl-XlqSzUkWvBMa34vQu9WLXvXnkDSf6fVcaD/exec', {
-        method:'POST',
-        body:JSON.stringify({token,type,date:new Date()}),
-        headers:{'Content-Type':'application/json'}
-    }).then(res=>{
-        status.textContent = 'Pointage enregistré : '+type+' ✅';
-    }).catch(err=>{
-        status.textContent = 'Erreur : '+err;
-        status.style.color='red';
+    
+    fetch('https://script.google.com/macros/s/AKfycbw9QmigOhu4AuuNZiWkzjWd3taLskPRaAfHQMBL6D3nl8_1YXDVygPfLdxSfPS3c-Zs/exec', {
+        method: 'POST',
+        body: JSON.stringify({
+            token: token,
+            type: type,
+            date: new Date()
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === "ok"){
+            status.style.color = 'green';
+            status.textContent = 'Pointage enregistré : ' + type + ' ✅';
+        } else {
+            status.style.color = 'red';
+            status.textContent = 'Erreur serveur';
+        }
+    })
+    .catch(err => {
+        status.style.color = 'red';
+        status.textContent = 'Erreur : ' + err;
     });
 }
-
-
