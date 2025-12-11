@@ -15,7 +15,7 @@ document.getElementById('btnOut').onclick = () => sendPointage('Sortie');
 
 function sendPointage(type){
     const status = document.getElementById('status');
-    fetch('https://script.google.com/macros/s/AKfycbwTlzd0E6Xt9XiVt2SyKFEsy32ku_gXl-XlqSzUkWvBMa34vQu9WLXvXnkDSf6fVcaD/exec', {
+fetch('https://script.google.com/macros/s/AKfycbwTlzd0E6Xt9XiVt2SyKFEsy32ku_gXl-XlqSzUkWvBMa34vQu9WLXvXnkDSf6fVcaD/exec', {
         method:'POST',
         body:JSON.stringify({token,type,date:new Date()}),
         headers:{'Content-Type':'application/json'}
@@ -26,4 +26,5 @@ function sendPointage(type){
         status.style.color='red';
     });
 }
+
 
