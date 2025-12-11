@@ -15,10 +15,10 @@ main.innerHTML = `
 document.getElementById('btnIn').onclick = () => sendPointage('Entrée');
 document.getElementById('btnOut').onclick = () => sendPointage('Sortie');
 
-// Fonction pour envoyer le pointage à Google Sheets
+// Fonction pour envoyer le pointage à Google Sheets via Google Apps Script
 function sendPointage(type){
     const status = document.getElementById('status');
-    
+
     fetch('https://script.google.com/macros/s/AKfycbw9QmigOhu4AuuNZiWkzjWd3taLskPRaAfHQMBL6D3nl8_1YXDVygPfLdxSfPS3c-Zs/exec', {
         method: 'POST',
         body: JSON.stringify({
