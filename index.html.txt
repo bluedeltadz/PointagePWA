@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pointage QR</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body{font-family:Arial;text-align:center;padding:30px;}
+button{padding:15px 30px;margin:10px;font-size:18px;}
+#status{margin-top:20px;color:green;}
+</style>
+</head>
+<body>
+<h1>Pointage</h1>
+<div id="main"></div>
+<div id="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
