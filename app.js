@@ -1,9 +1,11 @@
+// Vérifier si le téléphone a déjà un token unique
 let token = localStorage.getItem('pointage_token');
 if(!token){
     token = 't'+Math.random().toString(36).substr(2,10);
     localStorage.setItem('pointage_token', token);
 }
 
+// Afficher les boutons Entrée / Sortie
 const main = document.getElementById('main');
 main.innerHTML = `
   <button id="btnIn">Entrée</button>
@@ -13,10 +15,11 @@ main.innerHTML = `
 document.getElementById('btnIn').onclick = () => sendPointage('Entrée');
 document.getElementById('btnOut').onclick = () => sendPointage('Sortie');
 
+// Fonction pour envoyer le pointage à Google Sheets
 function sendPointage(type){
     const status = document.getElementById('status');
-
-   https://script.google.com/macros/s/AKfycbzBFKbTsK0IWQ8TxHvFigqDDD8ewbyZI7q9Kni9ZrGmj-7Dv7fPnY2gIzlF57ma-u_c/exec
+    
+    fetch('https://script.google.com/macros/s/AKfycbw9QmigOhu4AuuNZiWkzjWd3taLskPRaAfHQMBL6D3nl8_1YXDVygPfLdxSfPS3c-Zs/exec', {
         method: 'POST',
         body: JSON.stringify({
             token: token,
@@ -42,5 +45,3 @@ function sendPointage(type){
         status.textContent = 'Erreur : ' + err;
     });
 }
-
-
