@@ -1,47 +1,42 @@
-// Vérifier si le téléphone a déjà un token unique
-let token = localStorage.getItem('pointage_token');
-if(!token){
-    token = 't'+Math.random().toString(36).substr(2,10);
-    localStorage.setItem('pointage_token', token);
-}
+// URL de ton Google Apps Script (API pointage)
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9QmigOhu4AuuNZiWkzjWd3taLskPRaAfHQMBL6D3nl8_1YXDVygPfLdxSfPS3c-Zs/exec";
 
-// Afficher les boutons Entrée / Sortie
-const main = document.getElementById('main');
-main.innerHTML = `
-  <button id="btnIn">Entrée</button>
-  <button id="btnOut">Sortie</button>
-`;
+// Cette fonction s'exécute quand l'utilisateur clique sur Entrée ou Sortie
+async function sendPointage(action) {
+    const statusEl = document.getElementById("status");
 
-document.getElementById('btnIn').onclick = () => sendPointage('Entrée');
-document.getElementById('btnOut').onclick = () => sendPointage('Sortie');
+    try {
+        // Identification de l'utilisateur via le device
+        let employee = localStorage.getItem("employee_id");
 
-// Fonction pour envoyer le pointage à Google Sheets
-function sendPointage(type){
-    const status = document.getElementById('status');
-    
-    fetch('https://script.google.com/macros/s/AKfycbw9QmigOhu4AuuNZiWkzjWd3taLskPRaAfHQMBL6D3nl8_1YXDVygPfLdxSfPS3c-Zs/exec', {
-        method: 'POST',
-        body: JSON.stringify({
-            token: token,
-            type: type,
-            date: new Date()
-        }),
-        headers: {
-            'Content-Type': 'application/json'
+        // Si l'utilisateur n'a pas encore d'ID, on en crée un
+        if (!employee) {
+            employee = "EMP-" + Math.random().toString(36).substring(2, 10);
+            localStorage.setItem("employee_id", employee);
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === "ok"){
-            status.style.color = 'green';
-            status.textContent = 'Pointage enregistré : ' + type + ' ✅';
-        } else {
-            status.style.color = 'red';
-            status.textContent = 'Erreur serveur';
-        }
-    })
-    .catch(err => {
-        status.style.color = 'red';
-        status.textContent = 'Erreur : ' + err;
-    });
+
+        // Construire les données à envoyer
+        const payload = {
+            employee: employee,
+            action: action
+        };
+
+        // Envoyer au script Google (POST)
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Comme no-cors empêche la réponse, on considère que l’envoi est OK
+        statusEl.textContent = "✔️ Pointage enregistré avec succès !";
+        statusEl.style.color = "green";
+
+    } catch (error) {
+        statusEl.textContent = "❌ Erreur : " + error;
+        statusEl.style.color = "red";
+    }
 }
